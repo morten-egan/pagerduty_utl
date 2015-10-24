@@ -76,7 +76,9 @@ as
 	/** This procedure does the actual endpoint invocation, with all the settings
 	* @author Morten Egan
 	*/
-	procedure talk;
+	procedure talk (
+		endpoint_override							varchar2
+	);
 
 end pagerduty;
 /

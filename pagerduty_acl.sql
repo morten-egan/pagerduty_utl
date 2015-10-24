@@ -29,5 +29,14 @@ begin
 
 	commit;
 
+	dbms_network_acl_admin.assign_acl (
+		acl => 'pagerduty_acl.xml',
+		host => 'events.pagerduty.com',
+		lower_port => 443,
+		upper_port => null
+	);
+
+	commit;
+
 end;
 /

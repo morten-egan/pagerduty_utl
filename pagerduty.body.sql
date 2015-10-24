@@ -120,7 +120,9 @@ as
 	
 	end init_talk;
 
-	procedure talk
+	procedure talk (
+		endpoint_override							varchar2
+	)
 	
 	as
 
@@ -164,14 +166,22 @@ as
 			max_redirects => 1
 		);
 
-		if pagerduty_session.pagerduty_host is not null and pagerduty_session.pagerduty_host_port is not null and pagerduty_session.pagerduty_api_name is not null and pagerduty_session.pagerduty_api_version is not null then
+		if endpoint_override is not null then
+			dbms_output.put_line(endpoint_override);
 			pagerduty_request := utl_http.begin_request(
-				url => pagerduty_session.transport_protocol || '://' || pagerduty_session.pagerduty_host || ':' || pagerduty_session.pagerduty_host_port || '/' || pagerduty_session.pagerduty_api_name || '/' || pagerduty_session.pagerduty_api_version || '/' || pagerduty_call_request.call_endpoint
+				url => endpoint_override
 				, method => pagerduty_call_request.call_method
 			);
-			dbms_output.put_line(pagerduty_session.transport_protocol || '://' || pagerduty_session.pagerduty_host || ':' || pagerduty_session.pagerduty_host_port || '/' || pagerduty_session.pagerduty_api_name || '/' || pagerduty_session.pagerduty_api_version || '/' || pagerduty_call_request.call_endpoint);
 		else
-			raise_application_error(-20001, 'pagerduty site parameters invalid');
+			if pagerduty_session.pagerduty_host is not null and pagerduty_session.pagerduty_host_port is not null and pagerduty_session.pagerduty_api_name is not null and pagerduty_session.pagerduty_api_version is not null then
+				pagerduty_request := utl_http.begin_request(
+					url => pagerduty_session.transport_protocol || '://' || pagerduty_session.pagerduty_host || ':' || pagerduty_session.pagerduty_host_port || '/' || pagerduty_session.pagerduty_api_name || '/' || pagerduty_session.pagerduty_api_version || '/' || pagerduty_call_request.call_endpoint
+					, method => pagerduty_call_request.call_method
+				);
+				dbms_output.put_line(pagerduty_session.transport_protocol || '://' || pagerduty_session.pagerduty_host || ':' || pagerduty_session.pagerduty_host_port || '/' || pagerduty_session.pagerduty_api_name || '/' || pagerduty_session.pagerduty_api_version || '/' || pagerduty_call_request.call_endpoint);
+			else
+				raise_application_error(-20001, 'pagerduty site parameters invalid');
+			end if;
 		end if;
 
 		utl_http.set_header(
