@@ -121,7 +121,7 @@ as
 	end init_talk;
 
 	procedure talk (
-		endpoint_override							varchar2
+		endpoint_override							varchar2 default null
 	)
 	
 	as

@@ -77,7 +77,7 @@ as
 	* @author Morten Egan
 	*/
 	procedure talk (
-		endpoint_override							varchar2
+		endpoint_override							varchar2 default null
 	);
 
 end pagerduty;
